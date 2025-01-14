@@ -35,7 +35,7 @@
             const querySnapshot = await getDocs(q);
             
             if (querySnapshot.empty) {
-                orderList.innerHTML = "<p>لا توجد طلبات لهذا المستخدم.</p>";
+                orderList.innerHTML = "<p>لا يوجد طلب بهذا الرقم.</p>";
             } else {
                 querySnapshot.forEach((doc) => {
                     const order = doc.data();
@@ -64,7 +64,7 @@
             if (userName) {
                 fetchOrdersByUser(userName);
             } else {
-                alert("يرجى إدخال اسم المستخدم أولاً.");
+                alert("يرجى إدخال رقم الطلب أولاً.");
             }
         }
 
@@ -204,8 +204,8 @@
         <h1>VNDR EXPRESS</h1>
         
         <div class="form-container">
-            <input type="text" id="user-name" placeholder="أدخل اسم المستخدم">
-            <button id="display-orders-btn">سجل</button>
+            <input type="text" id="user-name" placeholder="أدخل رقم الطلب ">
+            <button id="display-orders-btn">تتبع</button>
         </div>
         
         <div id="order-list"></div>
