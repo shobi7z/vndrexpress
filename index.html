@@ -28,6 +28,20 @@
         const userNameInput = document.getElementById("user-name");
         const displayOrdersButton = document.getElementById("display-orders-btn");
 
+        // وظيفة لحساب الوقت المتبقي
+        function calculateTimeLeft(timestamp) {
+            const now = new Date();
+            const targetDate = new Date(timestamp.seconds * 1000); // تحويل من Firebase timestamp إلى JavaScript Date
+            const timeDifference = targetDate - now;
+
+            const seconds = Math.floor((timeDifference / 1000) % 60);
+            const minutes = Math.floor((timeDifference / (1000 * 60)) % 60);
+            const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24);
+            const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+            return { days, hours, minutes, seconds };
+        }
+
         // وظيفة لجلب الطلبات بناءً على اسم المستخدم
         async function fetchOrdersByUser(userName) {
             orderList.innerHTML = ""; // تفريغ القائمة
@@ -41,6 +55,13 @@
                     const order = doc.data();
                     const orderId = doc.id;
 
+                    // حساب الوقت المتبقي باستخدام الدالة calculateTimeLeft
+                    let timeLeftString = "لا يوجد وقت متبقي"; // افتراضي في حالة غياب timestamp
+                    if (order.timestamp) {
+                        const { days, hours, minutes, seconds } = calculateTimeLeft(order.timestamp);
+                        timeLeftString = `${days} يوم: ${hours} ساعة: ${minutes} دقيقة: ${seconds} ثانية`;
+                    }
+
                     const orderElement = document.createElement("div");
                     orderElement.className = "order-item";
                     orderElement.innerHTML = `
@@ -50,7 +71,7 @@
                         <div class="order-body">
                             <div class="order-detail"><strong>وزن الطلب:</strong> ${order.weight} كجم</div>
                             <div class="order-detail"><strong>السعر:</strong> ${order.price} دينار عراقي</div>
-                            <div class="order-detail"><strong>الأيام المتبقية:</strong> ${order.remainingDays} يوم</div>
+                            <div class="order-detail"><strong>الأيام المتبقية:</strong> ${timeLeftString}</div>
                         </div>
                     `;
                     orderList.appendChild(orderElement);
